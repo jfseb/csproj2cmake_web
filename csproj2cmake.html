@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Viz.js</title>
+    <title>csproj2cmake_web</title>
     <style>
 
     #app {
@@ -36,20 +36,20 @@
       flex-direction: column;
       -webkit-flex-direction: column;
     }
-    
+
     #options {
       flex: 0 0 auto;
       -webkit-flex: 0 0 auto;
     }
-    
-    #output {
+
+    #output2 {
       flex: 1 1 auto;
       -webkit-flex: 1 1 auto;
       position: relative;
       overflow: auto;
     }
-    
-    
+
+
     #editor {
       border-right: 1px solid #ccc;
     }
@@ -60,25 +60,25 @@
       padding: 8px;
       text-align: center;
     }
-    
+
     #header b {
       font-size: 18px;
     }
-    
+
     #options {
       background: #eee;
       border-bottom: 1px solid #ccc;
       padding: 8px;
     }
-    
+
     #options label {
       margin-right: 8px;
     }
-    
+
     #options #raw.disabled {
       opacity: 0.5;
     }
-    
+
     #output svg {
       position: absolute;
       top: 0;
@@ -86,7 +86,7 @@
       width: 100%;
       height: 100%;
     }
-    
+
     #output #text {
       font-size: 12px;
       font-family: monaco, courier, monospace;
@@ -98,22 +98,22 @@
       height: 100%;
       overflow: auto;
     }
-    
+
     #output img {
       display: block;
       margin: 0 auto;
     }
-    
+
     #output.working svg, #output.error svg,
     #output.working #text, #output.error #text,
     #output.working img, #output.error img {
       opacity: 0.4;
     }
-    
+
     #output.error #error {
       display: inherit;
     }
-    
+
     #output #error {
       display: none;
       position: absolute;
@@ -149,311 +149,122 @@
       height: 100%;
       float: left;
     }
-    
+
     </style>
   </head>
   <body>
-    
+
     <div id="app">
       <div id="header">
             <label id="sources">
               Source:
               <select>
-                <option selected value="./example.gv">./example.gv</option>
+                <option selected value="tmpl/default.tmpl">./example.gv</option>
                 <option >[lastEdit]</option>
-                <option value="./example2.gv">./example2.gv</option>
-                <option>../../../../docs/configuration_flow_config_xml.gv</option>
-                <option>../../../../docs/bizx_components.gv</option>
-                <option>../../../../docs/data_flow.gv</option>
-                <option>../../../../docs/componentsHL.gv</option>
-                <option>../../../../docs/mdf_entities.gv</option>
-                <option>../../../../docs/project_components.gv</option>
-                <option>../../../../docs/code_layering.gv</option>
-                <option>../../../../docs/setup_components.gv</option>
-                <option>./config.xml</option>
-                <option>../scenarios/NG/config.xml</option>
-                <option>../scenarios/NG/config.1.xml</option>
-                <option>../scenarios/NG/config.1.xml</option>
-                <option>../scenarios/S0/config.xml</option>
-                <option>../scenarios/S1/config.xml</option>
-                <option>../scenarios/WF/config.xml</option>
-                <option>../min/base_config.xml</option>
-                <option>../b2005/base_config.xml</option>
               </select>
             </label>
-        
-         <button id="btnEDIT" ONCLICK="updateEDIT()">edit</button>.
-         <INPUT TYPE="button" VALUE="upload cfg" ONCLICK="selectFile()"/>
+        <button id="btnTransform" ONCLICK="transformNow()">transform</button>.
+		  
+		<button id="btnClear" ONCLICK="clearStorage()" > clear storage </button>.
+<button id="btnClear" ONCLICK="clearTemplateStorage()" > clear Template storage </button>.
+		  
+      <INPUT TYPE="button" VALUE="upload csproj" ONCLICK="selectFile()"/>
   		 <INPUT TYPE="file" id="dafile" style="visibility:hidden" onChange="loadFile()"/>
-         <b> </b> &mdash; <a id="sourcehref" href="http://www.graphviz.org">./example.gv</a>
 
- <a style="font-size:small" href="https://github.wdf.sap.corp/pages/bizx/au-paaeconfigservice/"> back to base... </a>
+ <a style="font-size:small" href="https://github.org/jfsebpublic/csproj2cmake"> info </a>
 
       </div>
-      <div id="panes" class="split split-horizontal">
-        <div id="editor" class="split"># http://www.graphviz.org/content/cluster
+      <div id="panes" style="width:100%">
+        <textarea id="input" onChange="onChange()" onKeyUp="onKeyUp()">
 
-digraph G {
+input1
 
-	subgraph cluster_0 {
-		style=filled;
-		color=lightgrey;
-		node [style=filled,color=white];
-		a0 -> a1 -> a2 -> a3;
-		label = "process #1";
-	}
+        </textarea>
+	    <textarea id="output2" value="output2">
+                    output2
+                            </textarea>
 
-	subgraph cluster_1 {
-		node [style=filled];
-		b0 -> b1 -> b2 -> b3;
-		label = "process #2";
-		color=blue
-	}
-	start -> a0;
-	start -> b0;
-	a1 -> b3;
-	b2 -> a3;
-	a3 -> a0;
-	a3 -> end;
-	b3 -> end;
+    <textarea id="output" value="output">output</textarea>
 
-	start [shape=Mdiamond];
-	end [shape=Msquare];
-}
-</div>
-        <div id="graph" class="split">
-          <div id="options">
-            <label id="engine">
-              Engine:
-              <select>
-                <option>circo</option>
-                <option selected>dot</option>
-                <option>fdp</option>
-                <option>neato</option>
-                <option>osage</option>
-                <option>twopi</option>
-              </select>
-            </label>
-            
-            <label id="format">
-              Format:
-              <select>
-                <option selected>svg</option>
-                <option>png-image-element</option>
-                <option>json</option>
-                <option>xdot</option>
-                <option>plain</option>
-                <option>ps</option>
-              </select>
-            </label>
-            
-            <label id="raw">
-              <input type="checkbox"> Show raw output
-            </label>
-          </div>
-          <div id="output">
-            <div id="error"></div>
-          </div>
-        </div>
-      </div>
+        <textarea id="template" lines="100" value="tmpl" onChange="onChange()" onKeyUp="onKeyUp()">
+tmpl
+        </textarea>
     </div>
-    
+    </div>
+	  <div>
+
+		  
+	  </div>
+
+    <!--
 	<script src="https://pagecdn.io/lib/ace/1.4.7/ace.js" type="text/javascript" charset="utf-8"></script>
 	<script src="./vizjs/viz.js"></script>
     <script src="./vizjs/fabric.min.js"></script>
     <script src="./vizjs/split.min.js"></script>
     <script src="./vizjs/svg-pan-zoom.min.js"></script>
-
+  -->
     <script>
-
-    var beforeUnloadMessage = null;
-
-    var resizeEvent = new Event("paneresize");
-    
-    var sizes = localStorage.getItem('split-sizes')
-
-    if (sizes) {
-    	try {
-        sizes = JSON.parse(sizes)
-    	} catch(e) {
-    		sizes = [25,75];
-    	}
-    } else {
-        sizes = [25, 75] // default sizes
-    }
-    myplist = null;
-    mysplit = Split(['#editor', '#graph'], {
-      sizes: sizes,
-      onDragEnd: function(sizes) { 
-   		localStorage.setItem('split-sizes', JSON.stringify(mysplit.getSizes()));
-        var svgOutput = document.getElementById("svg_output");
-        if (svgOutput != null) {
-          svgOutput.dispatchEvent(resizeEvent);
-        }
-      }
-    });
-    
-    var editor = ace.edit("editor");
-    editor.getSession().setMode("ace/mode/dot");
 
     var parser = new DOMParser();
-    var worker;
-    var result;
-    // an explicit set editor value
-    var editorValue; 
+	var template;
 
-    function updateGraph() {
-      if (worker) {
-        worker.terminate();
-      }
+	var APP_PREFIX = "csproj2cmake";
 
-      document.querySelector("#output").classList.add("working");
-      document.querySelector("#output").classList.remove("error");
+		var tm = null;
+		function onKeyUp() {
+			var src = window.event.srcElement;
+			if (tm) {
+				window.clearTimeout(tm);
+				tm = null;
+			}
+			tm = window.setTimeout( ()=>{ onChangeS(src); },200);			
+		}
 
-      worker = new Worker("./worker.js");
+		function onChange() {
+			onChangeS(window.event.srcElement);
+		}
+		
+		var noSave = false;
+		function onChangeS(e) {
+			if(!noSave) {
+				var el = e;
+				var id = el.getAttribute("id");
+				window.localStorage.setItem(APP_PREFIX + id, el.value);
+			}
+			transformNow();
+		}
 
-      worker.onmessage = function(e) {
-        document.querySelector("#output").classList.remove("working");
-        document.querySelector("#output").classList.remove("error");
-        
-        result = e.data;
-        
-        updateOutput();
-      }
+		function clearStorage() {
+			window.localStorage.removeItem(APP_PREFIX + "input");
+			window.localStorage.removeItem(APP_PREFIX + "template");
+		}
+		function clearTemplateStorage() {
+			window.localStorage.removeItem(APP_PREFIX + "template");
+		}
 
-      worker.onerror = function(e) {
-        document.querySelector("#output").classList.remove("working");
-        document.querySelector("#output").classList.add("error");
-        
-        var message = e.message === undefined ? "An error occurred while processing the graph input." : e.message;
-        
-        var error = document.querySelector("#error");
-        while (error.firstChild) {
-          error.removeChild(error.firstChild);
-        }
-        
-        document.querySelector("#error").appendChild(document.createTextNode(message));
-        
-        console.error(e);
-        e.preventDefault();
-      }
-      var value = editor.getSession().getDocument().getValue();
-      if (editorValue && value && (value.length > 0) && ( editorValue != value)) {
-          // a true edit
-          editorValue = value;
-          console.log('*** SET lastEdit' + value);
-          localStorage.setItem('lastEdit', value);
-      }
-      
-      var params = {
-        src: editor.getSession().getDocument().getValue(),
-        options: {
-          engine: document.querySelector("#engine select").value,
-          format: document.querySelector("#format select").value
-        }
-      };
-      
-      // Instead of asking for png-image-element directly, which we can't do in a worker,
-      // ask for SVG and convert when updating the output.
-      
-      if (params.options.format == "png-image-element") {
-        params.options.format = "svg";
-      }
-      
-      worker.postMessage(params);
-    }
-    
-    function updateOutput() {
-      var graph = document.querySelector("#output");
-
-      var svg = graph.querySelector("svg");
-      if (svg) {
-        graph.removeChild(svg);
-      }
-
-      var text = graph.querySelector("#text");
-      if (text) {
-        graph.removeChild(text);
-      }
-
-      var img = graph.querySelector("img");
-      if (img) {
-        graph.removeChild(img);
-      }
-      
-      if (!result) {
-        return;
-      }
-      
-      if (document.querySelector("#format select").value == "svg" && !document.querySelector("#raw input").checked) {
-        var svg = parser.parseFromString(result, "image/svg+xml").documentElement;
-        svg.id = "svg_output";
-        graph.appendChild(svg);
-
-        panZoom = svgPanZoom(svg, {
-          zoomEnabled: true,
-          controlIconsEnabled: true,
-          fit: true,
-          center: true,
-          minZoom: 0.1
-        });
-
-        svg.addEventListener('paneresize', function(e) {
-          panZoom.resize();
-        }, false);
-        window.addEventListener('resize', function(e) {
-          panZoom.resize();
-        });
-      } else if (document.querySelector("#format select").value == "png-image-element") {
-        var image = Viz.svgXmlToPngImageElement(result);
-        graph.appendChild(image);
-      } else {
-        var text = document.createElement("div");
-        text.id = "text";
-        text.appendChild(document.createTextNode(result));
-        graph.appendChild(text);
-      }
-    }
-
-    editor.on("change", function() {
-      updateGraph();
-      beforeUnloadMessage = "Your changes will not be saved.";
-    });
-    
-    window.addEventListener("beforeunload", function(e) {
-      return beforeUnloadMessage;
-    });
-    
-    document.querySelector("#engine select").addEventListener("change", function() {
-      updateGraph();
-    });
-
-    document.querySelector("#format select").addEventListener("change", function() {
-      if (document.querySelector("#format select").value === "svg") {
-        document.querySelector("#raw").classList.remove("disabled");
-        document.querySelector("#raw input").disabled = false;
-      } else {
-        document.querySelector("#raw").classList.add("disabled");
-        document.querySelector("#raw input").disabled = true;
-      }
-      
-      updateGraph();
-    });
-
-    document.querySelector("#raw input").addEventListener("change", function() {
-      updateOutput();
-    });
-
-    
-    
-    updateGraph();
-    
+		function RestoreOrDefault(id, defaultContent) {
+			var val = window.localStorage.getItem(APP_PREFIX + id);
+			val = val || defaultContent;
+			document.getElementById(id).value = val; 
+		}
+		
+		function onPageLoad() {
+			noSave = true;
+			RestoreOrDefault("input", "paste csproj here");
+			RestoreOrDefault("template", cmaketemplate);
+			noSave = false;
+			transformNow();
+		}
+		
     </script>
+
+
+
     <script>
 
-    //startup 
+    //startup
     function loadStyleSheet(url, callback) {
-        
+
         var xhr = new XMLHttpRequest();
         xhr.open("GET", url, true);
         xhr.onload = function (e) {
@@ -469,10 +280,10 @@ digraph G {
           console.error(xhr.statusText);
         };
         xhr.send(null)
-    } 
-    //startup 
+    }
+    //startup
     function loadGVSheet(url, callback) {
-        
+
         var xhr = new XMLHttpRequest();
         xhr.open("GET", url, true);
         xhr.onload = function (e) {
@@ -488,7 +299,7 @@ digraph G {
           console.error(xhr.statusText);
         };
         xhr.send(null)
-    } 
+    }
 
 
 var relativePathToSrcMainResources = "../../../main/resources/paaeconfigservice/"
@@ -503,7 +314,7 @@ var myDOM;
 var xmlDoc;
 
 function makeRelative(path) {
-    return path; 
+    return path;
 }
 
 
@@ -522,15 +333,15 @@ function download(data, filename, type) {
         a.click();
         setTimeout(function() {
             document.body.removeChild(a);
-            window.URL.revokeObjectURL(url);  
-        }, 0); 
+            window.URL.revokeObjectURL(url);
+        }, 0);
     }
 }
 
 function downloadDAJSON() {
     var dajson = document.getElementById('dajson').value;
     var s = editor.getValue();
-    
+
     download(dajson, "config.dajson.json","text");
 }
 
@@ -564,14 +375,14 @@ function loadConfig( url )
 	document.getElementById("sourcehref").href=url;
 	document.getElementById("sourcehref").value=url;
 	document.getElementById("sourcehref").innerText=url;
-	
+
 	var nextpath = document.location.pathname + "?configurl=" + encodeURIComponent(url) + document.location.hash;
-	document.location = nextpath; 
+	document.location = nextpath;
 }
 
 function updateDocument(url) {
 	var nextpath = document.location.pathname + "?configurl=" + encodeURIComponent(url) + document.location.hash;
-	document.location = nextpath; 
+	document.location = nextpath;
 }
 
 function loadOnStart() {
@@ -611,7 +422,7 @@ function loadAndSetDocument(url) {
 		v = localStorage.getItem('lastEdit');
     	editorValue = v;
 		editor.setValue( v );
-		return; 
+		return;
 	}
     myXMLHTTPRequest = new XMLHttpRequest();
     console.log("loading document " + url);
@@ -656,9 +467,7 @@ console.log(oDOM.documentElement.nodeName == "parsererror" ? "error while parsin
 return oDOM;
 }
 
-
 function loadStyleSheet(url, callback) {
-    
     var xhr = new XMLHttpRequest();
     xhr.open("GET", url, true);
     xhr.onload = function (e) {
@@ -674,77 +483,50 @@ function loadStyleSheet(url, callback) {
       console.error(xhr.statusText);
     };
     xhr.send(null)
-} 
-
-var xsltErrorsToHTML;  loadStyleSheet("errors.to.html.xslt", function ( resp ) {
-    xsltErrorsToHTML = resp;
-    });
-var xsltConfigCheck;  loadStyleSheet(relativePathToSrcMainXSLTResources + "config.check.xslt", function ( resp ) { xsltConfigCheck = resp; });
-
-var xsltConfigToTyped = null;
-loadStyleSheet(relativePathToSrcMainXSLTResources + "config.to.typed.xslt", function( resp ) { 
-    xsltConfigToTyped = resp; 
- });
-
-
-var xsltConfigToCheckTyped = null;
-loadStyleSheet(relativePathToSrcMainXSLTResources + "config.to.checktyped.xslt", function( resp ) { 
-	xsltConfigToCheckTyped = resp; 
- });
-
-var xsltConfigToDAJson = null;
-loadStyleSheet(relativePathToSrcTestResources + "webvalidation/config.to.da.json.xslt", function( resp ) { 
-    xsltConfigToDAJson = resp; 
- });
-
- 
-var xsltConfigToExcel = null;
-loadStyleSheet(relativePathToSrcTestResources + "webvalidation/config.to.dacolumns.excel.xslt", function( resp ) { 
-    xsltConfigToExcel = resp; 
- });
-
-var xsltConfigToAugdot = null;
-loadStyleSheet(relativePathToSrcTestResources + "webvalidation/config.to.augdot.xslt", function( resp ) { 
-    xsltConfigToAugdot = resp; 
- });
-
-var xsltConfigAugdotToGraphviz = null;
-loadStyleSheet(relativePathToSrcTestResources + "webvalidation/config.augdot.to.graphviz.browser.xslt", function( resp ) { 
-	xsltConfigAugdotToGraphviz = resp; 
- });
-
-
-var xsd;  
-loadStyleSheet(relativePathToSrcMainResources + "schema/config.xsd", function ( resp ) { 
-	var xsdtmp = new XMLSerializer().serializeToString(resp);
-	// cut out the non-ascii stuff which the xsdjs has trouble with
-	var start = xsdtmp.indexOf("Supported Locales by Successfactors -");
-	var end = xsdtmp.indexOf("(Traditional Chinese) zh_TW");
-	xsd =  xsdtmp.substring(0,start) + xsdtmp.substring(end);
-	});
-
-function checkSchema(resolvedConfig) {
-
-  resolvedConfig = toAscii(resolvedConfig);
-  var Module = {
-    xml: resolvedConfig,
-    schema: xsd,
-    arguments: ["--noout", "--schema", "config.xsd", "config.xml"]
-	};
-	var xmllint = validateXML(Module);
-    xmllint = "" + xmllint;
-    xmllint = xmllint.trim();
- 	if(">"+ xmllint + "<" == ">config.xml validates<") {
- 	   document.getElementById("schemaErrors").innerText = "";
- 	   return "";
- 	}
-	document.getElementById("schemaErrors").innerText = xmllint;
- 	return xmllint;
 }
 
-function transformDocument(xdoc, xsl) {
+
+function loadText(url, callback) {
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", url, true);
+    xhr.onload = function (e) {
+      if (xhr.readyState === 4) {
+        if (xhr.status === 200) {
+          callback(xhr.responseText);
+        } else {
+          console.error(xhr.statusText);
+        }
+      }
+    };
+    xhr.onerror = function (e) {
+      console.error(xhr.statusText);
+    };
+    xhr.send(null)
+}
+
+
+var xsltCsproj2CmakeRaw = null;
+loadStyleSheet("xslt/csproj2cmakelist.xslt", function( resp ) {
+  xsltCsproj2CmakeRaw = resp;
+ });
+
+
+var cmaketemplate = null;
+loadText("tmpl/cmakelists_prefixed.tmpl", function( resp ) {
+	cmaketemplate = resp;
+ });
+
+
+var examplecsproj = null;
+
+loadText("tmpl/example.csproj", function( resp ) {
+  examplecsproj = resp;
+ });
+
+
+ function transformDocument(xdoc, xsl) {
     var xsltProcessor = new XSLTProcessor();
-    xsltProcessor.importStylesheet(xsl);
+    var r = xsltProcessor.importStylesheet(xsl);
     var xmlDocTyped = xsltProcessor.transformToDocument(xdoc);
     return xmlDocTyped;
 }
@@ -755,7 +537,7 @@ function transformDocumentToString(xdoc, xsl) {
     var resp = xsltProcessor.transformToDocument(xdoc);
     console.log("result is " + resp);
     ct = new XMLSerializer().serializeToString(resp);
-    
+
     start = "<div id=\"cutSTART\">cutSTART</div>";
     end = "<div id=\"cutEND\">cutEND</div>";
     ct = ct.substring(ct.indexOf(start) + start.length);
@@ -767,117 +549,218 @@ function transformDocumentToString(xdoc, xsl) {
     //rx = resp.documentElement.innerText;
     //console.log("res " + rx);
     //return rx;
-   
+
     //console.log("result is " + ct);
     //return rx;
 }
+</script>
 
+var areLibs = [
+    "cm_IKVM.OpenJDK.Core",
+    "cm_DataProtectionProxy"
+    "cm_IKVM.OpenJDK.Jdbc",
+    "cm_IKVM.OpenJDK.Security",
+    "cm_IKVM.OpenJDK.Util",
+    "cm_IKVM.OpenJDK.XML.Parse",
+    "cm_IKVM.Runtime",
+    "cm_Infohrm.Crypto",
+    "cm_ngdbc",
+    "cm_Nii.JSON"];
+	  
+<script>
 
-function loadAndCheck() {
-    <!-- this is slightly off -->
-    //return;
-    loadOnStart();
-	if (document.location.hash && getParameterByName("edit", document.location.hash) == "visible") {
-	 	showEDIT();
-	} else {
-		hideEDIT();
+	
+	
+
+var a = {
+  "References|HintPath" :      [
+	  ["D_O_T_N_E_T_R_E_F_H_P","NiiRelease","fw","FilternoDollarConfiguration","quote"],
+  	  ["D_O_T_N_E_T_R_E_F_P_D_L","NiiRelease","fw","ExtractPostDollarConfiguration", "stripdotExeDll", "prefix", "quote"],
+  	  ["D_O_T_N_E_T_R_E_F_D_L","NiiRelease","fw","ExtractPostDollarConfiguration", "stripdotExeDll", "quote"],
+  
+  ],
+  "References|value|!HintPath" :[["D_O_T_N_E_T_R_E_F_N_M","quote"]],
+  "ProjectReferences|value" :[["P_R_O_J_R_E_F_V","first"]],
+  "ProjectReferences|Name" : [
+	  ["P_R_O_J_R_E_F_N_M", "quote"],
+	  ["P_R_O_J_R_E_F_P_N_M","prefix","quote"]
+		  ],
+  "NAME|value" : [
+		["T_A_R_G_E_T_N_M"],
+        ["T_A_R_G_E_T_P_N_M", "prefix"]
+	],
+  "TYPE|value" : [["T_Y_P_E"],["E_X_E", "libExeFalse"]],
+  "COMPILES|Value" :[["S_O_U_R_C_E_S","fw","quoteIfWs"]],
+}
+
+var prefix = "cm_";
+	
+function fixVal(val, op) {
+	if(val =="") {
+		return val;
 	}
+	if(op == "fw") {
+       val = val.replaceAll("\\","/");
+	}
+	if(op == "prefix") {		
+       val = prefix +  val;
+	}
+	if(op == "NiiRelease") {
+		val = val.replaceAll("Nii.JSON\\V2.0.0\\bin\\$(Configuration)\\","Nii.JSON/V2.0.0/bin/Release/");
+		return val;
+	}
+	if(op == "quoteIfWs") {
+		if(val.indexOf(" ")>=0) {
+			return '"' + val + '"';
+		}
+		return val;
+	}	
+	if(op == "FilternoDollarConfiguration") {
+		if(val.indexOf("$(Configuration)") > 0) {
+			return "";
+		}
+		return val;
+	}
+	if(op == "ExtractPostDollarConfiguration") {
+		var i = val.indexOf("$(Configuration)");
+		if ( i < 0 ) {
+			return "";			
+		}
+		val = val.substr(i + "$(Configuration)/".length);
+		return val;
+	}
+	if(op == "stripdotExeDll") {
+		if(val.endsWith(".dll")) {
+			return val.substr(0, val.length - ".dll".length);
+		}
+		if( val.endsWith(".exe")) {
+			return val.substr(0, val.length - ".exe".length);
+		}
+		return val; 
+	}
+	if(op == "quote") {
+		if ( val == "") {
+			return "";
+		}
+       val = '"' + val + '"';
+	}	
+	if(op == "first") {
+		val = val.split(" ")[0];
+	}
+	return val;
 }
 
-var atimer = null;
-
-
-
-function replaceInHash(tag, value) {
-    var hash = window.location.hash;
-    newTagValue = tag + "=" + encodeURIComponent(value);
-    if( hash.indexOf(tag +"=") >= 0)
-    {
-        re = new RegExp(tag + "=" + "([^&]+)");
-        hash = hash.replace(re, newTagValue)
-    } else {
-        hash += "&" + newTagValue;
-    }
-    window.location.hash= hash;
+function fixByOps(val, ops) {
+	for(var i = 1; i < ops.length; ++i) {
+		val = fixVal(val,ops[i]);
+	}
+	return val;
 }
 
-function transformStringToString(s, stylesheet)  {	
-   var xmlDoc =  parseXML(s); 
+function fixVals(val, ops) {
+
+	if(Array.isArray(val)) {
+		var val1 = val.map( a => fixByOps(a,ops));
+		console.log(val1);
+		var val2 = val1.filter( (x) => (!(x == "")));
+		if( val1.length != val2.length ) {
+			console.log(val1);
+			console.log(val2);
+		}
+		return val2;
+	}
+	return fixByOps(val,ops);
+}
+
+function transformOne(pn,arr,docR,src) {
+  var tag = arr[0];
+  var u = pn.split('|');
+  var id = u[0];
+  el = docR.getElementById(id);
+  if(id.endsWith("S") || id.endsWith("s")) {
+    vals = [];
+    for(var i = 0; i < el.childElementCount; ++i) {
+		var ec = el.children[i];
+        val = ec.getAttribute(u[1]);
+		var collect = true;
+		if (u.length > 2) {
+			var check = u[2];
+			if(u[2].startsWith('!')) {
+				check = u[2].substr(1);
+			}
+			var v = ec.getAttribute(check);
+			collect = !(u[2].startsWith('!') ^  (v == null || v == ""));
+		}
+		if( val != "" && collect == true) {
+	        val = fixVals(val,arr);
+			if( val != "") {
+		        vals.push(val);
+			}
+		}
+      }
+    return src.replaceAll(tag, vals.join("\n    "));
+  } else {
+    val = el.getAttribute(u[1]);
+    val = fixVals(val,arr);
+    return src.replaceAll(tag,val);
+  }
+}
+
+function transformX(a,docR) {
+  src = document.getElementById("template").value;
+  Object.getOwnPropertyNames(a).forEach( pn =>
+  {
+	  a[pn].forEach( arr => {
+	    src = transformOne(pn,arr,docR,src);
+	  });
+  }
+  );
+  document.getElementById("output2").value = src;
+}
+
+
+function transformNow() {
+  var s = document.getElementById("input").value;
+  var stylesheet = xsltCsproj2CmakeRaw;
+  var doc = parseXML(s);
+  var docR = transformDocument(doc,stylesheet);
+  var NAME = docR.getElementById("NAME").getAttribute("value");
+  var res = new XMLSerializer().serializeToString(docR);
+  document.getElementById("output").value = res;
+  transformX(a,docR);
+  //var cmx = transformStringToString(s, stylesheet);
+}
+
+
+</script>
+
+<script>
+
+function transformStringToString(s, stylesheet)  {
+   var xmlDoc =  parseXML(s);
    var xmlDocTransformed = transformDocument(xmlDoc, stylesheet);
    return  new XMLSerializer().serializeToString(xmlDocTransformed);
 }
 
-
-function downloadExcel() {
-	var s = editor.getValue(); 
-	var sExcel ='<?xml version="1.0"?>'+ transformStringToString(s,xsltConfigToExcel); 
-    console.log(sExcel);
-    var xx = '<?mso-application progid="Excel.Sheet"?>';
-	download(sExcel, "config.dacolumn.xml","text");
-    
-}
-
-function downloadDatasets() {
-	var s = editor.getValue(); 
-    download(s, "config.datasets.xml","text");
-}
-
-function getResolvedConfig() {
-  var oldStr = editor.getValue();
-  return oldStr.replace(/scale=\"\$[A-Z_a-z0-9_]+\"/g, "scale=\"2\"")
-               .replace(/dataType=\"\$[A-Z_a-z0-9_]+\"/g, "dataType=\"DECIMAL\"")
-               .replace(/(dataType\=\"[^$]+(CHAR|char)\"[ ]+.*precision=\")\$[A-Z_a-z0-9_]+(\")/g, "$142$3")
-               .replace(/(precision=\")\$[A-Z_a-z0-9_]+(\"[ ]+.*dataType\=\"[^$]+(CHAR|char)\")/g, "$142$2")
-               .replace(/precision=\"\$[A-Z_a-z0-9_]+\"/g, "precision=\"23\"");
-}
-
-
-function transformXMLToGV(xmlsrc)
-{
-    //var sResolved = getResolvedConfig();
-    //var schema = checkSchema(sResolved);
-    var sRaw = xmlsrc;
-    xmlDoc =  parseXML(xmlsrc); 
-    var xsltProcessor = new XSLTProcessor();
-    xsltProcessor.importStylesheet(xsltConfigToTyped);
-    // do this at least 4 times for proper type inference    
-    var xmlDocTyped = transformDocument(xmlDoc, xsltConfigToTyped);
-    xmlDocTyped = transformDocument(xmlDocTyped, xsltConfigToTyped);
-    xmlDocTyped = transformDocument(xmlDocTyped, xsltConfigToTyped);
-    xmlDocTyped = transformDocument(xmlDocTyped, xsltConfigToTyped);
-    xmlDocTyped = transformDocument(xmlDocTyped, xsltConfigToTyped);
-    xmlDocTyped = transformDocument(xmlDocTyped, xsltConfigToTyped);
-    xmlDocTyped = transformDocument(xmlDocTyped, xsltConfigToTyped);
-    xmlDocTyped = transformDocument(xmlDocTyped, xsltConfigToTyped);
-    xmlDocTyped = transformDocument(xmlDocTyped, xsltConfigToTyped);
-    xmlDocTyped = transformDocument(xmlDocTyped, xsltConfigToTyped);
-    // 10 times
-    xmlDocTyped = transformDocument(xmlDocTyped, xsltConfigToTyped);
-    xmlDocTyped = transformDocument(xmlDocTyped, xsltConfigToTyped);
-    xmlDocTyped = transformDocument(xmlDocTyped, xsltConfigToTyped);
-    xmlAU = transformDocument(xmlDocTyped, xsltConfigToAugdot);
-    docGV = transformDocumentToString(xmlAU, xsltConfigAugdotToGraphviz);
-    console.log(" gv " + docGV);
-    return docGV;
-}
+//    docGV = transformDocumentToString(xmlAU, xsltConfigAugdotToGraphviz);
 
 function serializeElement(element)
 {
    var targetParent = {};
-   element.getAttributeNames().forEach( function(attrName) 
+   element.getAttributeNames().forEach( function(attrName)
    {
                 if ( attrName.indexOf(":") == -1 && attrName.startsWith("_") == false) {
                     var memberName = "_" + attrName;
                		targetParent[memberName] = element.getAttribute(attrName);
                 }
    });
-   return targetParent; 
+   return targetParent;
 }
 
 function addToParent( targetParent, ch , newElement )
 {
     var elName = ch.localName;
-	if( ch.getAttribute("_asArrayMember") == "true") 
+	if( ch.getAttribute("_asArrayMember") == "true")
 	{
 
 	    if ( !targetParent.hasOwnProperty(elName)) {
@@ -891,7 +774,7 @@ function addToParent( targetParent, ch , newElement )
 
 function serialize(element) {
  	var targetParent = {};
-    element.getAttributeNames().forEach( function(attrName) 
+    element.getAttributeNames().forEach( function(attrName)
     {
         if ( attrName.indexOf(":") == -1 && attrName.startsWith("_") == false) {
             var memberName = "_" + attrName;
@@ -909,7 +792,7 @@ function serialize(element) {
 }
 
 function serializeToJSON( xmlDocDA ) {
-	
+
     var res = {};
     addToParent(res, xmlDocDA.documentElement, serialize(xmlDocDA.documentElement));
 	return res;
@@ -921,45 +804,19 @@ function updateEDIT()
     if ( sizes && sizes.length && sizes[0] != 0)
     {
     	hideEDIT();
-    	return;	
+    	return;
     }
     showEDIT();
 }
 
-function calcEDIT() {
-	// do nothing
+function loadAndCheck() {
+
 }
-
-function showEDIT() {
-    calcEDIT();
-    mysplit.setSizes([25,75]);
-    document.getElementById("btnEDIT").textContent="Hide Editor";
-    replaceInHash("edit","visible");
-}
-
-function hideEDIT() { 
-    mysplit.setSizes([0,100]);
-	document.getElementById("btnEDIT").textContent="Show Editor";
-	replaceInHash("edit","hidden");
-}
-
-var source = null;
-
-document.querySelector("#sources select").addEventListener("change", function() {
-	var value = document.querySelector("#sources select").value;
-	if ( value == source ) {
-		return;
-	}
-	source = value;
-	loadConfig( value );
-	updateGraph();
-  });
-
 
 function selectFile() {
     document.getElementById('dafile').value = null;
     document.getElementById('dafile').click();
-}    
+}
 function loadFile() {
     afile = document.getElementById('dafile').files[0];
     var reader = new FileReader();
@@ -971,7 +828,7 @@ function loadFile() {
     reader.readAsText(afile);
 }
 
-	setTimeout(loadAndCheck, 200);
+	setTimeout(onPageLoad, 200);
 
 </script>
   </body>

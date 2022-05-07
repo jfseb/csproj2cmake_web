@@ -1,0 +1,53 @@
+cmake_minimum_required(VERSION 3.23)
+project(T_A_R_G_E_T LANGUAGES CSharp)
+
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+include(CSharpUtilities)
+
+set_property(TARGET "T_A_R_G_E_T" PROPERTY DOTNET_TARGET_FRAMEWORK_VERSION "v4.6.1")
+set_property(TARGET "T_A_R_G_E_T" PROPERTY WIN32_EXECUTABLE FALSE)
+set_property(TARGET "T_A_R_G_E_T" PROPERTY VS_CONFIGURATION_TYPE ClassLibrary)
+set_property(TARGET "T_A_R_G_E_T" PROPERTY VS_DOTNET_REFERENCES
+    "System.Configuration"
+    "System.Data"
+    "System"
+    "System.Core"
+    "System.Data"
+    "System.Web"
+    "System.Runtime.Serialization"
+    "System.Web"
+    "System.Xml"
+    "WindowsBase"
+    D_O_T_N_E_T_R_E_F_S
+        "C:/git/Assemblies/Aspose/Aspose.Network/V5.3.0.0/Aspose.Network.dll"
+        "C:/git/Assemblies/Aspose/Aspose.Network/V5.3.0.0/Aspose.Network.Exchange.Schema.dll"
+        "C:/git/Assemblies/Aspose/Aspose.Network/V5.3.0.0/Aspose.Network.Exchange.Schema.XmlSerializers.dll"
+)
+
+P_R_O_J_R_E_F_S
+
+add_library("T_A_R_G_E_T" SHARED
+    S_O_U_R_C_E_S
+    Email/EmailAttachment.cs
+    Email/EmailResource.cs
+    Email/EmailSender.cs
+    Extensions/SerializationExtensions.cs
+    Logging/AbstractLogWriter.cs
+    Logging/LogEntry.cs
+    Logging/Logger.cs
+    Logging/LoggerEnums.cs
+    Logging/LoggerThread.cs
+    Logging/LoggingEventController.cs
+    Logging/LoggingQueue.cs
+    Logging/LoggingSettings.cs
+    Logging/LogWriterManager.cs
+    Logging/TextFileLogger.cs
+    Logging/TextFileLoggerWithWinEventLoggerFallback.cs
+    Logging/WinEventLogger.cs
+    Properties/AssemblyInfo.cs
+    Utility/Impersonator.cs
+    Utility/LogAppSettings.cs
+    Utility/ThreadHandler.cs
+    Utility/ThreadManager.cs
+    Utility/HrmlCallbackParams.cs
+)

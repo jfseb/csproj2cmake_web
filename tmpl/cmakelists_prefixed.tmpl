@@ -1,0 +1,39 @@
+# cmakelists_predefined V0.1
+cmake_minimum_required(VERSION 3.23)
+project(cm_T_A_R_G_E_T_N_M LANGUAGES CSharp)
+
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+include(CSharpUtilities)
+
+add_library("cm_T_A_R_G_E_T_N_M" SHARED
+    S_O_U_R_C_E_S
+)
+
+set_property(TARGET "cm_T_A_R_G_E_T_N_M" PROPERTY DOTNET_TARGET_FRAMEWORK_VERSION "v4.7.2")
+set_property(TARGET "cm_T_A_R_G_E_T_N_M" PROPERTY WIN32_EXECUTABLE FALSE)
+set_property(TARGET "cm_T_A_R_G_E_T_N_M" PROPERTY VS_CONFIGURATION_TYPE ClassLibrary)
+set_property(TARGET "cm_T_A_R_G_E_T_N_M" PROPERTY VS_DOTNET_REFERENCES
+    D_O_T_N_E_T_R_E_F_N_M
+    D_O_T_N_E_T_R_E_F_H_P
+     )
+
+# Example multline commnet
+#[[  "System.Runtime.Serialization"
+    "System.Web"
+    "System.Xml"
+    "C:/git/Assemblies/Aspose/Aspose.Network/V5.3.0.0/Aspose.Network.dll"
+    "C:/git/Assemblies/Aspose/Aspose.Network/V5.3.0.0/Aspose.Network.Exchange.Schema.dll"
+    "C:/git/Assemblies/Aspose/Aspose.Network/V5.3.0.0/Aspose.Network.Exchange.Schema.XmlSerializers.dll" ]]
+
+# P_R_O_X  J_R_E_F_P_N_MX
+
+target_link_libraries("cm_T_A_R_G_E_T_N_M"
+    P_R_O_J_R_E_F_P_N_M
+    D_O_T_N_E_T_R_E_F_P_D_L
+)
+
+
+
+set_target_properties("cm_T_A_R_G_E_T_N_M" PROPERTIES OUTPUT_NAME "T_A_R_G_E_T_N_M")
+
+
