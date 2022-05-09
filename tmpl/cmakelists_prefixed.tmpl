@@ -5,13 +5,29 @@ project(cm_T_A_R_G_E_T_N_M LANGUAGES CSharp)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 include(CSharpUtilities)
 
-add_library("cm_T_A_R_G_E_T_N_M" SHARED
+#[[IF_ISLIBRARY
+add_library("cm_T_A_R_G_E_T_N_M" SHARED)
+#ELSE_ISLIBRARY
+add_executable("cm_T_A_R_G_E_T_N_M")
+#ENDIF_ISLIBRARY]]
+
+
+target_sources("cm_T_A_R_G_E_T_N_M"
+  PRIVATE
     S_O_U_R_C_E_S
+    E_M_B_E_D_D_E_D_R_E_S_O_U_R_C_E
 )
 
-set_property(TARGET "cm_T_A_R_G_E_T_N_M" PROPERTY DOTNET_TARGET_FRAMEWORK_VERSION "v4.7.2")
+# 4.7.2
+set_property(TARGET "cm_T_A_R_G_E_T_N_M" PROPERTY DOTNET_TARGET_FRAMEWORK_VERSION "${DotNetTargetVersion}")
+#[[IF_ISLIBRARY
 set_property(TARGET "cm_T_A_R_G_E_T_N_M" PROPERTY WIN32_EXECUTABLE FALSE)
 set_property(TARGET "cm_T_A_R_G_E_T_N_M" PROPERTY VS_CONFIGURATION_TYPE ClassLibrary)
+#ELSE_ISLIBRARY
+#set_property(TARGET "cm_T_A_R_G_E_T_N_M" PROPERTY WIN32_EXECUTABLE FALSE)
+#set_property(TARGET "cm_T_A_R_G_E_T_N_M" PROPERTY VS_CONFIGURATION_TYPE ClassLibrary)
+#ENDIF_ISLIBRARY]]
+
 set_property(TARGET "cm_T_A_R_G_E_T_N_M" PROPERTY VS_DOTNET_REFERENCES
     D_O_T_N_E_T_R_E_F_N_M
     D_O_T_N_E_T_R_E_F_H_P
@@ -28,12 +44,47 @@ set_property(TARGET "cm_T_A_R_G_E_T_N_M" PROPERTY VS_DOTNET_REFERENCES
 # P_R_O_X  J_R_E_F_P_N_MX
 
 target_link_libraries("cm_T_A_R_G_E_T_N_M"
+  PRIVATE
     P_R_O_J_R_E_F_P_N_M
     D_O_T_N_E_T_R_E_F_P_D_L
 )
 
+# embedded resources
+#[[FOREACH_EMBEDDEDRESOURCE
+set_property(SOURCE E_M_B_E_D_D_E_D_R_E_S_O_U_R_C_E PROPERTY VS_TOOL_OVERRIDE "EmbeddedResource")
+#ENDFOREACH_EMBEDDEDRESOURCE]]
 
+# collect plain content includes into a variable for now
+#[[IF_CONTENTINCLUDE
+set_property(PROJ_INCLUDE C_O_N_T_E_N_T_I_N_C_L_U_D_E)
+#ENDIF_CONTENTINCLUDE]]
 
+# embed resource
+# set_property(SOURCE LoginPageParts/WFALoginDiv.html.tmpl PROPERTY VS_TOOL_OVERRIDE "EmbeddedResource")
+
+# output library/exe w.o. cm_ prefix
 set_target_properties("cm_T_A_R_G_E_T_N_M" PROPERTIES OUTPUT_NAME "T_A_R_G_E_T_N_M")
+
+
+O_U_T_P_U_T_B_I_N
+#[[IF_OUTPUTBIN
+# build Debug and Release into a single dir bin
+set_target_properties( "cm_T_A_R_G_E_T_N_M"
+    PROPERTIES
+    ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
+    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/lib"
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/bin"
+    RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_CURRENT_LIST_DIR}/bin"
+    RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_CURRENT_LIST_DIR}/bin"
+)
+#ELSE_OUTPUTBIN
+# build Debug/Release current dir (vs positionds)
+set_target_properties( "cm_T_A_R_G_E_T_N_M"
+    PROPERTIES
+    ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
+    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/lib"
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/bin"
+)
+#ENDIF_OUTPUTBIN]]
 
 

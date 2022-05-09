@@ -34,7 +34,15 @@
 
   <!-- ********************************* -->
 
+  <xsl:template name="EmbeddedResources">
+      <EmbeddedResources id="EmbeddedResources">
+        <xsl:for-each select="//s:EmbeddedResource">
+         <EmbeddedResource Include="{@Include}" SubType="{s:SubType}" HintPath="{s:HintPath}"/>
+        </xsl:for-each>
+      </EmbeddedResources>
+    </xsl:template>
 
+  <!-- ********************************* -->
   <xsl:template name="References">
       <References id="References">
         <xsl:for-each select="//s:Reference">
@@ -46,12 +54,30 @@
   <!-- ********************************* -->
 
   <xsl:template name="Content">
-      <Contents id="Content">
+      <Contents id="Contents">
         <xsl:for-each select="//s:Content">
         <Content value="{@Include}"/>
         </xsl:for-each>
       </Contents>
     </xsl:template>
+
+  <!-- ********************************* -->
+
+  <xsl:template name="OutputPath">
+    <xsl:for-each select="(//s:OutputPath)[1]">
+        <OutputPath id="OutputPath" value="{.}"/>
+    </xsl:for-each>
+  </xsl:template>
+
+  <xsl:template name="OutputType">
+    <xsl:for-each select="//s:OutputType[1]">
+        <OutputType id="OutputType" value="{.}"/>
+    </xsl:for-each>
+  </xsl:template>
+
+  <xsl:template name="AssemblyName">
+    <AssemblyName id="AssemblyName" value="{//s:AssemblyName}" RootNameSpace="{//s:RootNameSpace}"/>
+  </xsl:template>
 
   <!-- ********************************* -->
 <!-- embedded resource /Generator /SubType-->
@@ -67,9 +93,13 @@
 
     <NAME id="NAME" value="{//s:PropertyGroup/s:AssemblyName[1]/text()}"></NAME>
     <TYPE id="TYPE" value="{//s:PropertyGroup/s:OutputType[1]}"/>
+    <xsl:call-template name="OutputType"/>
+    <xsl:call-template name="OutputPath"/>
+    <xsl:call-template name="AssemblyName"/>
     <xsl:call-template name="Compiles"/>
     <xsl:call-template name="ProjectReferences"/>
     <xsl:call-template name="References"/>
+    <xsl:call-template name="EmbeddedResources"/>
     <xsl:call-template name="Content"/>
   </RESULT>
   </xsl:template>

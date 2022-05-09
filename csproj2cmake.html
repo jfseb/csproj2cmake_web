@@ -164,10 +164,21 @@
               </select>
             </label>
         <button id="btnTransform" ONCLICK="transformNow()">transform</button>.
-		  
+
 		<button id="btnClear" ONCLICK="clearStorage()" > clear storage </button>.
-<button id="btnClear" ONCLICK="clearTemplateStorage()" > clear Template storage </button>.
-		  
+
+    <label id="src_template">
+      Source:
+      <select>
+        <option selected value="tmpl/prefix_gv_local.tmpl">./prefix_local.tmpl</option>
+        <option selected value="tmpl/prefix_gv.tmpl">./prefix_gv.tmpl</option>
+        <option selected value="tmpl/plain.tmpl">./plain.tmpl</option>
+        <option >[lastEdit]</option>
+      </select>
+    </label>
+
+    <button id="btnClear" ONCLICK="clearTemplateStorage()" > clear Template storage </button>.
+
       <INPUT TYPE="button" VALUE="upload csproj" ONCLICK="selectFile()"/>
   		 <INPUT TYPE="file" id="dafile" style="visibility:hidden" onChange="loadFile()"/>
 
@@ -193,7 +204,7 @@ tmpl
     </div>
 	  <div>
 
-		  
+
 	  </div>
 
     <!--
@@ -217,13 +228,13 @@ tmpl
 				window.clearTimeout(tm);
 				tm = null;
 			}
-			tm = window.setTimeout( ()=>{ onChangeS(src); },200);			
+			tm = window.setTimeout( ()=>{ onChangeS(src); },200);
 		}
 
 		function onChange() {
 			onChangeS(window.event.srcElement);
 		}
-		
+
 		var noSave = false;
 		function onChangeS(e) {
 			if(!noSave) {
@@ -245,9 +256,9 @@ tmpl
 		function RestoreOrDefault(id, defaultContent) {
 			var val = window.localStorage.getItem(APP_PREFIX + id);
 			val = val || defaultContent;
-			document.getElementById(id).value = val; 
+			document.getElementById(id).value = val;
 		}
-		
+
 		function onPageLoad() {
 			noSave = true;
 			RestoreOrDefault("input", "paste csproj here");
@@ -255,7 +266,7 @@ tmpl
 			noSave = false;
 			transformNow();
 		}
-		
+
     </script>
 
 
@@ -566,35 +577,42 @@ var areLibs = [
     "cm_Infohrm.Crypto",
     "cm_ngdbc",
     "cm_Nii.JSON"];
-	  
+
 <script>
 
-	
-	
 
-var a = {
-  "References|HintPath" :      [
+
+
+  var a = {
+  "Contents|value" : [["C_O_N_T_E_N_T_I_N_C_L_U_D_E","fw","quote"]],
+  "References|@HintPath" :      [
 	  ["D_O_T_N_E_T_R_E_F_H_P","NiiRelease","fw","FilternoDollarConfiguration","quote"],
   	  ["D_O_T_N_E_T_R_E_F_P_D_L","NiiRelease","fw","ExtractPostDollarConfiguration", "stripdotExeDll", "prefix", "quote"],
   	  ["D_O_T_N_E_T_R_E_F_D_L","NiiRelease","fw","ExtractPostDollarConfiguration", "stripdotExeDll", "quote"],
-  
+
   ],
-  "References|value|!HintPath" :[["D_O_T_N_E_T_R_E_F_N_M","quote"]],
-  "ProjectReferences|value" :[["P_R_O_J_R_E_F_V","first"]],
-  "ProjectReferences|Name" : [
+  "EmbeddedResources|@Include" :[["E_M_B_E_D_D_E_D_R_E_S_O_U_R_C_E", "fw", "quote"]],
+  "OutputType|value|==Library" :[["O_U_T_P_U_T_L_I_B"],
+                                 ["I_S_L_I_B_R_A_R_Y"]],
+  "OutputType|value|==Exe" :[["O_U_T_P_U_T_E_X_E"],
+                             ["I_S_E_X_E"] ],
+  "OutputPath|value|==bin\\" :[["O_U_T_P_U_T_B_I_N"]],
+  "References|value|@!HintPath" :[["D_O_T_N_E_T_R_E_F_N_M","quote"]],
+  "ProjectReferences|@value" :[["P_R_O_J_R_E_F_V","first"]],
+  "ProjectReferences|@Name" : [
 	  ["P_R_O_J_R_E_F_N_M", "quote"],
 	  ["P_R_O_J_R_E_F_P_N_M","prefix","quote"]
 		  ],
-  "NAME|value" : [
+  "NAME|@value" : [
 		["T_A_R_G_E_T_N_M"],
         ["T_A_R_G_E_T_P_N_M", "prefix"]
 	],
-  "TYPE|value" : [["T_Y_P_E"],["E_X_E", "libExeFalse"]],
-  "COMPILES|Value" :[["S_O_U_R_C_E_S","fw","quoteIfWs"]],
+  "TYPE|@value" : [["T_Y_P_E"],["E_X_E", "libExeFalse"]],
+  "COMPILES|@Value" :[["S_O_U_R_C_E_S","fw","quoteIfWs"]],
 }
 
 var prefix = "cm_";
-	
+
 function fixVal(val, op) {
 	if(val =="") {
 		return val;
@@ -602,7 +620,7 @@ function fixVal(val, op) {
 	if(op == "fw") {
        val = val.replaceAll("\\","/");
 	}
-	if(op == "prefix") {		
+	if(op == "prefix") {
        val = prefix +  val;
 	}
 	if(op == "NiiRelease") {
@@ -614,7 +632,7 @@ function fixVal(val, op) {
 			return '"' + val + '"';
 		}
 		return val;
-	}	
+	}
 	if(op == "FilternoDollarConfiguration") {
 		if(val.indexOf("$(Configuration)") > 0) {
 			return "";
@@ -624,7 +642,7 @@ function fixVal(val, op) {
 	if(op == "ExtractPostDollarConfiguration") {
 		var i = val.indexOf("$(Configuration)");
 		if ( i < 0 ) {
-			return "";			
+			return "";
 		}
 		val = val.substr(i + "$(Configuration)/".length);
 		return val;
@@ -636,14 +654,14 @@ function fixVal(val, op) {
 		if( val.endsWith(".exe")) {
 			return val.substr(0, val.length - ".exe".length);
 		}
-		return val; 
+		return val;
 	}
 	if(op == "quote") {
 		if ( val == "") {
 			return "";
 		}
        val = '"' + val + '"';
-	}	
+	}
 	if(op == "first") {
 		val = val.split(" ")[0];
 	}
@@ -672,37 +690,131 @@ function fixVals(val, ops) {
 	return fixByOps(val,ops);
 }
 
+function compressTag(tag) {
+  return tag.replaceAll("_","");
+}
+
+function expandForEach(src, tag, vals) {
+  var tagStart = "#[[FOREACH_" + compressTag(tag);
+  var tagEnd = "\n#ENDFOREACH_" + compressTag(tag) +"]]";
+  while(src.indexOf(tagStart) >= 0) {
+    var posStart = src.indexOf(tagStart);
+    var posEnd = src.indexOf(tagEnd,posStart);
+    var head = src.substr(0,posStart);
+    var body = src.substring(posStart+tagStart.length, posEnd);
+    var tail = src.substr(posEnd + tagEnd.length);
+    //
+    var res = head;
+    vals.forEach( v => {
+      res += expandPlain(body,tag,v);
+    });
+    src = res + tail;
+  }
+  return src;
+}
+
+
+function expandPlain(src, tag, valstring) {
+  return src.replaceAll(tag,valstring);
+}
+
+function expandIfElse(src, tag, truthy) {
+  var ctag = "#[[IF_" + compressTag(tag);
+  var tagStart = ctag;
+  var tagElse = "\n#ELSE_" + compressTag(tag);
+  var tagEnd = "\n#ENDIF_" + compressTag(tag) +"]]";
+  while(src.indexOf(tagStart) >= 0) {
+    posStart = src.indexOf(tagStart);
+    posElse = src.indexOf(tagElse,posStart);
+    posEnd = src.indexOf(tagEnd,posStart);
+    var head = src.substr(0,posStart);
+    var posEndTrue = (posElse > 0 && posElse < posEnd) ? posElse: posEnd;
+    var onTrue = src.substring(posStart+tagStart.length, posEndTrue);
+    var onFalse = "";
+    if(posEndTrue != posEnd) {
+      onFalse = src.substring(posElse + tagElse.length, posEnd);
+    }
+    var tail = src.substr(posEnd + tagEnd.length);
+    if(truthy) {
+      src = head + onTrue + tail;
+    } else {
+      src = head + onFalse + tail;
+    }
+  }
+  return src;
+}
+
+//console.log(expandIfElse("ABC\n#[[IF_ABCthebody1\n#ELSE_ABCtheelse\n#ENDIF_ABC]]tail", "A_B_C", true));
+//console.log(expandIfElse("ABC\n#[[IF_ABCthebody1\n#ELSE_ABCtheelse\n#ENDIF_ABC]]tail1\nABC\n#[[IF_ABCthebody1\n#ELSE_ABCtheelse\n#ENDIF_ABC]]tail2", "A_B_C", false));
+
+//console.log(expandForEach("ABC\n#[[FOREACH_ABCthebo A_B_C dy1\n#ENDFOREACH_ABC]]tail1\nABC\n#[[IF_ABCthebody1\n#ELSE_ABCtheelse\n#ENDIF_ABC]]tail2", "A_B_C", ["AB1", "AB2"]));
+
+
+function collectVal(vals, el, u, arr) {
+	var attrName = u[1];
+	if(u[1].startsWith("@")) {
+		attrName = u[1].substr(1);
+	}
+	val = el.getAttribute(attrName);
+	var collect = true;
+	if (u.length > 2) {
+		var check = u[2];
+		if(u[2].startsWith('==')) {
+		    // value coercion to bool
+	        val = (val == u[2].substr(2));
+	    } else if( u[2].startsWith('!=')) {
+	       val = (val != u[2].substr(2));
+		} else if(u[2].startsWith('@!')) {
+	         check = u[2].substr(2);
+	        var v = el.getAttribute(check);
+			collect = (v == null || v == "");
+		} else if (u[2].startsWith('@')) {
+		   var check = u[2].substr(1);
+	        var v = el.getAttribute(check);
+			collect = !(v == null || v == "");
+		}
+	}
+	if( val != "" && collect == true) {
+	  val = fixVals(val,arr);
+		if( val != "") {
+	        vals.push(val);
+		}
+	}
+  return vals;
+}
+
+
+function applyVals(src, mult, tag, vals) {
+  var truthy = (mult && vals.length) || vals[0];
+  var valstring = (vals.length == 0) ? "" : ((mult && vals.join("\n    ")) || vals[0]);
+  // expandIFELSE
+  src = expandIfElse(src, tag,truthy);
+  src = expandForEach(src, tag,vals);
+  src = expandPlain(src,tag, valstring)
+  return src;
+}
+
 function transformOne(pn,arr,docR,src) {
   var tag = arr[0];
   var u = pn.split('|');
   var id = u[0];
+  vals = [];
   el = docR.getElementById(id);
   if(id.endsWith("S") || id.endsWith("s")) {
     vals = [];
     for(var i = 0; i < el.childElementCount; ++i) {
-		var ec = el.children[i];
-        val = ec.getAttribute(u[1]);
-		var collect = true;
-		if (u.length > 2) {
-			var check = u[2];
-			if(u[2].startsWith('!')) {
-				check = u[2].substr(1);
-			}
-			var v = ec.getAttribute(check);
-			collect = !(u[2].startsWith('!') ^  (v == null || v == ""));
-		}
-		if( val != "" && collect == true) {
-	        val = fixVals(val,arr);
-			if( val != "") {
-		        vals.push(val);
-			}
-		}
-      }
-    return src.replaceAll(tag, vals.join("\n    "));
+      var ec = el.children[i];
+      vals = collectVal(vals, ec, u, arr);
+    }
+    src = applyVals(src, true, tag, vals);
+    return src;
+    //return src.replaceAll(tag, vals.join("\n    "));
   } else {
-    val = el.getAttribute(u[1]);
-    val = fixVals(val,arr);
-    return src.replaceAll(tag,val);
+    vals = collectVal(vals, el, u, arr);
+    return applyVals(src, false, tag, vals);
+    //val = el.getAttribute(u[1]);
+    //val = fixVals(val,arr);
+    //return src.replaceAll(tag,val);
   }
 }
 
