@@ -156,19 +156,20 @@
 
     <div id="app">
       <div id="header">
-            <label id="sources">
+        <button id="btnTransform" ONCLICK="transformNow()">transform again</button>.
+
+        <INPUT TYPE="button" VALUE="upload csproj" ONCLICK="selectFile('input')"/>
+        <label id="sources">
               Source:
               <select>
-                <option selected value="tmpl/default.tmpl">./example.gv</option>
+                <option selected value="tmpl/example.csproj">tmpl/example.csproj</option>
                 <option >[lastEdit]</option>
               </select>
-            </label>
-        <button id="btnTransform" ONCLICK="transformNow()">transform</button>.
+          </label>
 
-		<button id="btnClear" ONCLICK="clearStorage()" > clear storage </button>.
 
     <label id="src_template">
-      Source:
+      Template:
       <select>
         <option selected value="tmpl/prefix_gv_local.tmpl">./prefix_local.tmpl</option>
         <option selected value="tmpl/prefix_gv.tmpl">./prefix_gv.tmpl</option>
@@ -177,12 +178,15 @@
       </select>
     </label>
 
+    <INPUT TYPE="button" VALUE="upload template" ONCLICK="selectFile('template')"/>
     <button id="btnClear" ONCLICK="clearTemplateStorage()" > clear Template storage </button>.
 
-      <INPUT TYPE="button" VALUE="upload csproj" ONCLICK="selectFile()"/>
-  		 <INPUT TYPE="file" id="dafile" style="visibility:hidden" onChange="loadFile()"/>
+    <INPUT TYPE="file" id="dafiletemplate" style="visibility:hidden" onChange="loadFile('template')"/>
+    <INPUT TYPE="file" id="dafileinput" style="visibility:hidden" onChange="loadFile('input')"/>
+		<button id="btnClear" ONCLICK="clearStorage()" >clear ALL</button>.
 
- <a style="font-size:small" href="https://github.org/jfsebpublic/csproj2cmake"> info </a>
+
+ <a style="font-size:small" href="https://github.com/jfseb/csproj2cmake_web/"> info </a>
 
       </div>
       <div id="panes" style="width:100%">
@@ -245,12 +249,16 @@ tmpl
 			transformNow();
 		}
 
+    function clearAStorage(srctype) {
+			window.localStorage.removeItem(APP_PREFIX + srctype);
+    }
+
 		function clearStorage() {
-			window.localStorage.removeItem(APP_PREFIX + "input");
-			window.localStorage.removeItem(APP_PREFIX + "template");
+      clearAStorage('input');
+      clearAStorage('template');
 		}
 		function clearTemplateStorage() {
-			window.localStorage.removeItem(APP_PREFIX + "template");
+      clearAStorage('template');
 		}
 
 		function RestoreOrDefault(id, defaultContent) {
@@ -925,18 +933,17 @@ function loadAndCheck() {
 
 }
 
-function selectFile() {
-    document.getElementById('dafile').value = null;
-    document.getElementById('dafile').click();
+function selectFile(srctype) {
+    document.getElementById('dafile' +srctype).value = null;
+    document.getElementById('dafile' + srctype).click();
 }
-function loadFile() {
-    afile = document.getElementById('dafile').files[0];
+function loadFile(srctype) {
+    afile = document.getElementById('dafile' +srctype).files[0];
     var reader = new FileReader();
     // Closure to capture the file information.
     reader.onload = function(e) {
-    	editorValue = e.target.result;
-        editor.setValue(e.target.result);
-      };
+      document.getElementById(srctype).value = e.target.result;
+    };
     reader.readAsText(afile);
 }
 
