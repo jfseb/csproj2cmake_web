@@ -590,9 +590,9 @@ var areLibs = [
   var a = {
   "Contents|value" : [["C_O_N_T_E_N_T_I_N_C_L_U_D_E","fw","quote"]],
   "References|@HintPath" :      [
-	  ["D_O_T_N_E_T_R_E_F_H_P","NiiRelease","fw","FilternoDollarConfiguration","quote"],
-  	  ["D_O_T_N_E_T_R_E_F_P_D_L","NiiRelease","fw","ExtractPostDollarConfiguration", "stripdotExeDll", "prefix", "quote"],
-  	  ["D_O_T_N_E_T_R_E_F_D_L","NiiRelease","fw","ExtractPostDollarConfiguration", "stripdotExeDll", "quote"],
+	  ["D_O_T_N_E_T_R_E_F_H_P","fw","FilternoDollarConfiguration","quote"],
+  	  ["D_O_T_N_E_T_R_E_F_P_D_L","fw","ExtractPostDollarConfiguration", "stripdotExeDll", "prefix", "quote"],
+  	  ["D_O_T_N_E_T_R_E_F_D_L","fw","ExtractPostDollarConfiguration", "stripdotExeDll", "quote"],
 
   ],
   "EmbeddedResources|@Include" :[["E_M_B_E_D_D_E_D_R_E_S_O_U_R_C_E", "fw", "quote"]],
@@ -626,10 +626,6 @@ function fixVal(val, op) {
 	}
 	if(op == "prefix") {
        val = prefix +  val;
-	}
-	if(op == "NiiRelease") {
-		val = val.replaceAll("Nii.JSON\\V2.0.0\\bin\\$(Configuration)\\","Nii.JSON/V2.0.0/bin/Release/");
-		return val;
 	}
 	if(op == "quoteIfWs") {
 		if(val.indexOf(" ")>=0) {
